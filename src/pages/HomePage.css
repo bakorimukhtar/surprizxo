@@ -1,0 +1,144 @@
+.home-wrapper {
+    padding: 15px;
+    padding-bottom: 80px;
+    font-family: Arial, sans-serif;
+    background: #fdeaf3;
+    min-height: 100vh;
+  }
+  
+  .logo {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 700;
+    color: #7d258c;
+    margin-bottom: 10px;
+  }
+  
+  .section-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 18px;
+  }
+  
+  .wishlist-scroll {
+    display: flex;
+    overflow-x: auto;
+    gap: 12px;
+    padding-bottom: 5px;
+  }
+  
+  .wishlist-item {
+    min-width: 70px;
+    aspect-ratio: 1;
+    background: white;
+    border-radius: 50%;
+    position: relative;
+    border: 3px solid #ff4fb0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .wishlist-item img {
+    width: 80%;
+  }
+  
+  .price-tag {
+    position: absolute;
+    bottom: -15px;
+    font-size: 12px;
+    background: #ff2c98;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 8px;
+  }
+  
+  .upcoming-box {
+    background: #ff4fb0;
+    padding: 15px;
+    border-radius: 15px;
+    color: white;
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .upcoming-right {
+    font-size: 22px;
+    font-weight: bold;
+  }
+  
+  .gift-card {
+    background: white;
+    border-radius: 20px;
+    padding: 15px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    position: relative;
+  }
+  
+  .gift-img {
+    width: 100%;
+    border-radius: 12px;
+  }
+  
+  .gift-price {
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    background: #ff4fb0;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-weight: bold;
+  }
+  
+  .gift-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .btn-add {
+    background: #ff4fb0;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 12px;
+    border: none;
+    width: 48%;
+    font-weight: bold;
+  }
+  
+  .btn-send {
+    background: #3a0b6f;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 12px;
+    border: none;
+    width: 48%;
+    font-weight: bold;
+  }
+  
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    padding: 12px 25px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 22px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .center-add {
+    background: #ff4fb0;
+    color: white;
+    padding: 6px 16px;
+    border-radius: 50%;
+  }
+  
