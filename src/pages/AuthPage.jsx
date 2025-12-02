@@ -9,7 +9,8 @@ import {
 import { 
   Sparkles, Gift, Eye, EyeOff, ArrowRight, Check, 
   ShieldCheck, User, ChevronLeft, Calendar, Smartphone, Mail, AlertCircle,
-  Home, Heart, ShoppingBag, Plus, MessageCircle
+  Home, Heart, ShoppingBag, Plus, MessageCircle, Settings, LogOut, 
+  Bell, Shield, CircleUser, ChevronRight, Edit3
 } from "lucide-react"; 
 
 // --- STYLES ---
@@ -176,19 +177,20 @@ const styles = `
   }
   .switch-link { color: #AF52DE; cursor: pointer; font-weight: 600; margin-left: 5px; }
 
-  /* --- DASHBOARD STYLES (New) --- */
+  /* --- DASHBOARD & PROFILE STYLES --- */
   .dashboard-container {
     width: 100%;
     min-height: 100vh;
-    background: #FBFBFD; /* Updated to match AuthPage */
+    background: #FBFBFD;
     display: flex;
     flex-direction: column;
     padding-bottom: 80px; /* Space for navbar */
-    max-width: 480px; /* Mobile View constraint */
+    max-width: 480px; 
     margin: 0 auto;
     position: relative;
     box-shadow: 0 0 20px rgba(0,0,0,0.05);
-    overflow: hidden; /* For Orbs */
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .dash-header {
@@ -199,7 +201,6 @@ const styles = `
     position: relative;
     z-index: 5;
   }
-  /* Using shared class auth-logo-text for Title now */
   
   .chat-btn {
     width: 40px;
@@ -288,7 +289,7 @@ const styles = `
   .banner-content h3 { margin: 0; font-size: 20px; width: 60%; line-height: 1.2; font-weight: 700; }
   .banner-icon { font-size: 24px; font-weight: 800; opacity: 0.9; }
 
-  /* Main Card with Glassmorphism */
+  /* Main Card */
   .main-card {
     margin: 10px 20px;
     background: var(--glass-bg);
@@ -330,7 +331,6 @@ const styles = `
     font-size: 14px;
     box-shadow: 0 4px 10px rgba(255, 45, 85, 0.3);
   }
-  
   .card-actions {
     display: flex;
     gap: 10px;
@@ -355,7 +355,7 @@ const styles = `
   .btn-pink { background: var(--brand-pink); box-shadow: 0 4px 12px rgba(255, 45, 85, 0.2); }
   .btn-purple { background: var(--ios-text-primary); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
 
-  /* Navbar - Glass */
+  /* Navbar */
   .navbar {
     position: fixed;
     bottom: 0;
@@ -402,6 +402,54 @@ const styles = `
     transition: transform 0.2s;
   }
   .fab-add:active { transform: scale(0.95); }
+
+  /* PROFILE SPECIFIC */
+  .profile-header {
+    display: flex; flex-direction: column; align-items: center;
+    margin-bottom: 24px; position: relative; z-index: 5;
+    padding-top: 20px;
+  }
+  .profile-avatar {
+    width: 100px; height: 100px; border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 10px 20px rgba(175, 82, 222, 0.3);
+    margin-bottom: 12px;
+    object-fit: cover;
+  }
+  .profile-name { font-size: 22px; font-weight: 800; color: var(--ios-text-primary); }
+  .profile-handle { font-size: 14px; color: var(--ios-text-secondary); margin-top: 2px; }
+
+  .stats-row {
+    display: flex; justify-content: space-around; width: 100%;
+    margin-bottom: 24px;
+    padding: 0 20px;
+  }
+  .stat-item { text-align: center; }
+  .stat-val { font-size: 18px; font-weight: 700; color: var(--ios-text-primary); }
+  .stat-label { font-size: 12px; color: var(--ios-text-secondary); }
+
+  .menu-list {
+    display: flex; flex-direction: column; gap: 12px; width: 100%;
+    padding: 0 20px 20px;
+  }
+  .menu-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px; background: rgba(255,255,255,0.6);
+    border-radius: 16px; cursor: pointer; transition: 0.2s;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.4);
+  }
+  .menu-item:active { background: rgba(255,255,255,0.9); transform: scale(0.98); }
+  .menu-left { display: flex; align-items: center; gap: 12px; color: var(--ios-text-primary); font-weight: 600; font-size: 15px; }
+  .menu-icon-box {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: white; display: flex; align-items: center; justify-content: center;
+    color: #AF52DE;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .logout-btn {
+    color: var(--error-red);
+  }
 `;
 
 // --- ANIMATION VARIANTS ---
@@ -413,8 +461,6 @@ const formTransition = { type: "spring", stiffness: 300, damping: 30 };
 
 // --- COMPONENTS ---
 
-// 1. AUTH PAGE COMPONENT (formerly AuthScreen)
-// Copy this function into AuthPage.jsx for local development
 function AuthPage({ onLogin }) {
   const [mode, setMode] = useState("login");
   const [step, setStep] = useState(1);
@@ -426,7 +472,6 @@ function AuthPage({ onLogin }) {
   const [age, setAge] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   
-  // 3D Tilt Logic
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const mouseX = useSpring(x, { stiffness: 150, damping: 15 });
@@ -489,14 +534,12 @@ function AuthPage({ onLogin }) {
     if (isStepValid()) {
       if (step === 4) setStep(5);
       else if (step === 5) {
-        // FINISH SIGNUP
         onLogin();
       } else setStep(step + 1);
     }
   };
 
   const handleLogin = () => {
-    // LOGIN LOGIC HERE
     onLogin();
   };
 
@@ -533,7 +576,6 @@ function AuthPage({ onLogin }) {
               </motion.div>
             )}
             
-            {/* ... existing code ... */}
             {mode === 'signup' && step === 1 && (
               <motion.div key="step1" initial={{opacity:0, x:20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:-20}} transition={formTransition} style={{display:'flex', flexDirection:'column', gap:16}}>
                 <div className="input-wrapper">
@@ -601,15 +643,16 @@ function AuthPage({ onLogin }) {
   );
 }
 
-// 2. HOME PAGE COMPONENT (formerly Dashboard)
-// Copy this function into HomePage.jsx for local development
-function HomePage() {
+// 2. DASHBOARD & PROFILE WRAPPER
+function HomePage({ onLogout }) {
+  const [activeTab, setActiveTab] = useState('home'); // 'home' | 'profile'
+  
   const wishlistItems = [
-    { id: 1, price: "$18.90", img: "https://images.unsplash.com/photo-1544155843-d9d10e08f23f?auto=format&fit=crop&q=80&w=200" }, // Necklace
-    { id: 2, price: "$19.90", img: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&q=80&w=200" }, // Pearl Bracelet
-    { id: 3, price: "$18.90", img: "https://images.unsplash.com/photo-1523206489230-c012c64b2b48?auto=format&fit=crop&q=80&w=200" }, // Phone Case
-    { id: 4, price: "$15.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&q=80&w=200" }, // Cosmetics
-    { id: 5, price: "$22.00", img: "https://images.unsplash.com/photo-1576594496020-534bf2437b21?auto=format&fit=crop&q=80&w=200" }, // Perfume
+    { id: 1, price: "$18.90", img: "https://images.unsplash.com/photo-1544155843-d9d10e08f23f?auto=format&fit=crop&q=80&w=200" }, 
+    { id: 2, price: "$19.90", img: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&q=80&w=200" }, 
+    { id: 3, price: "$18.90", img: "https://images.unsplash.com/photo-1523206489230-c012c64b2b48?auto=format&fit=crop&q=80&w=200" }, 
+    { id: 4, price: "$15.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&q=80&w=200" }, 
+    { id: 5, price: "$22.00", img: "https://images.unsplash.com/photo-1576594496020-534bf2437b21?auto=format&fit=crop&q=80&w=200" }, 
   ];
 
   return (
@@ -619,86 +662,156 @@ function HomePage() {
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      {/* Aurora Background Elements for Continuity */}
       <div className="aurora-orb orb-1" style={{ top: '-15%', left: '-15%' }}></div>
       <div className="aurora-orb orb-2" style={{ bottom: '-5%', right: '-15%', opacity: 0.4 }}></div>
 
-      <div className="dash-header">
-        <h1 className="auth-logo-text" style={{ fontSize: 24, margin: 0 }}>Surprizxo</h1>
-        <button className="chat-btn">
-          <MessageCircle size={20} />
-        </button>
-      </div>
-
-      {/* Wishlist Section */}
-      <h2 className="section-title">My Wishlist</h2>
-      <div className="wishlist-scroll">
-        {wishlistItems.map((item) => (
-          <div key={item.id} className="wishlist-item">
-            <div className="wish-circle">
-              <img src={item.img} alt="Wishlist Item" className="wish-img" />
+      {/* === CONTENT SWITCHER === */}
+      <AnimatePresence mode="wait">
+        
+        {/* VIEW 1: HOME */}
+        {activeTab === 'home' && (
+          <motion.div key="home" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.2}}>
+            <div className="dash-header">
+              <h1 className="auth-logo-text" style={{ fontSize: 24, margin: 0 }}>Surprizxo</h1>
+              <button className="chat-btn">
+                <MessageCircle size={20} />
+              </button>
             </div>
-            <div className="wish-price-tag">{item.price}</div>
-          </div>
-        ))}
-      </div>
 
-      {/* Promo Banner */}
-      <div className="promo-banner">
-        <div className="banner-content">
-          <h3>Upcoming Moments</h3>
-        </div>
-        <div className="banner-icon">
-          <Gift size={32} />
-        </div>
-      </div>
+            <h2 className="section-title">My Wishlist</h2>
+            <div className="wishlist-scroll">
+              {wishlistItems.map((item) => (
+                <div key={item.id} className="wishlist-item">
+                  <div className="wish-circle">
+                    <img src={item.img} alt="Wishlist Item" className="wish-img" />
+                  </div>
+                  <div className="wish-price-tag">{item.price}</div>
+                </div>
+              ))}
+            </div>
 
-      {/* Featured Card */}
-      <div className="main-card">
-        <div className="card-img-container">
-          <div className="card-price">$19.90</div>
-          {/* Using a nice paper bag / gift bag image similar to reference */}
-          <img 
-            src="https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?auto=format&fit=crop&q=80&w=500" 
-            alt="Product" 
-            className="card-img" 
-          />
-        </div>
-        <div className="card-actions">
-           <button className="btn-action btn-pink">
-             <Plus size={18} /> Add to Wishlist
-           </button>
-           <button className="btn-action btn-purple">
-             <Gift size={18} /> Send as Gift
-           </button>
-        </div>
-      </div>
+            <div className="promo-banner">
+              <div className="banner-content">
+                <h3>Upcoming Moments</h3>
+              </div>
+              <div className="banner-icon">
+                <Gift size={32} />
+              </div>
+            </div>
 
-      {/* Navbar */}
+            <div className="main-card">
+              <div className="card-img-container">
+                <div className="card-price">$19.90</div>
+                <img 
+                  src="https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?auto=format&fit=crop&q=80&w=500" 
+                  alt="Product" 
+                  className="card-img" 
+                />
+              </div>
+              <div className="card-actions">
+                 <button className="btn-action btn-pink">
+                   <Plus size={18} /> Add to Wishlist
+                 </button>
+                 <button className="btn-action btn-purple">
+                   <Gift size={18} /> Send as Gift
+                 </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* VIEW 2: PROFILE */}
+        {activeTab === 'profile' && (
+          <motion.div key="profile" initial={{opacity:0, x: 20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:-20}} transition={{duration:0.3}}>
+            <div className="profile-header">
+               <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300" alt="Avatar" className="profile-avatar" />
+               <div className="profile-name">Sarah Jenkins</div>
+               <div className="profile-handle">@sarah_j</div>
+               <button className="chat-btn" style={{position:'absolute', top: 20, right: 20}}>
+                 <Edit3 size={18} />
+               </button>
+            </div>
+
+            <div className="stats-row">
+              <div className="stat-item">
+                <div className="stat-val">12</div>
+                <div className="stat-label">Wishlist</div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-val">5</div>
+                <div className="stat-label">Gifts Sent</div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-val">28</div>
+                <div className="stat-label">Friends</div>
+              </div>
+            </div>
+
+            <div className="menu-list">
+              <div className="menu-item">
+                <div className="menu-left">
+                  <div className="menu-icon-box"><Settings size={20} /></div>
+                  Account Settings
+                </div>
+                <ChevronRight size={20} color="#C7C7CC" />
+              </div>
+              <div className="menu-item">
+                <div className="menu-left">
+                  <div className="menu-icon-box"><Bell size={20} /></div>
+                  Notifications
+                </div>
+                <ChevronRight size={20} color="#C7C7CC" />
+              </div>
+              <div className="menu-item">
+                <div className="menu-left">
+                  <div className="menu-icon-box"><Shield size={20} /></div>
+                  Privacy & Security
+                </div>
+                <ChevronRight size={20} color="#C7C7CC" />
+              </div>
+              
+              <div className="menu-item" onClick={onLogout} style={{marginTop: 10, borderColor: 'rgba(255,59,48,0.2)'}}>
+                <div className="menu-left logout-btn">
+                  <div className="menu-icon-box" style={{color:'var(--error-red)'}}><LogOut size={20} /></div>
+                  Log Out
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+      </AnimatePresence>
+
+      {/* NAVBAR */}
       <div className="navbar">
-        <div className="nav-item active"><Home size={24} /></div>
+        <div className={`nav-item ${activeTab === 'home' ? 'active' : ''}`} onClick={() => setActiveTab('home')}><Home size={24} /></div>
         <div className="nav-item"><Heart size={24} /></div>
-        <div className="fab-add">
-          <Plus size={28} />
-        </div>
+        <div className="fab-add"><Plus size={28} /></div>
         <div className="nav-item"><ShoppingBag size={24} /></div>
-        <div className="nav-item"><User size={24} /></div>
+        <div className={`nav-item ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => setActiveTab('profile')}><CircleUser size={24} /></div>
       </div>
 
     </motion.div>
   );
 }
 
-// 3. MAIN APP (Acts as Router between AuthPage and HomePage)
+// 3. MAIN APP
 export default function App() {
   const [currentPage, setCurrentPage] = useState("auth"); // 'auth', 'loading', 'home'
 
   const handleLogin = () => {
-    // Simulate API call and redirect
     setCurrentPage("loading");
     setTimeout(() => {
       setCurrentPage("home");
     }, 1500);
+  };
+
+  const handleLogout = () => {
+    // Show loading briefly then go to auth
+    setCurrentPage("loading");
+    setTimeout(() => {
+      setCurrentPage("auth");
+    }, 1000);
   };
 
   return (
@@ -706,14 +819,12 @@ export default function App() {
       <style>{styles}</style>
       <AnimatePresence mode="wait">
         
-        {/* State 1: Auth Page */}
         {currentPage === "auth" && (
            <motion.div key="auth" exit={{ opacity: 0, x: -50 }} transition={{ duration: 0.3 }}>
               <AuthPage onLogin={handleLogin} />
            </motion.div>
         )}
 
-        {/* State 2: Loading / Redirecting */}
         {currentPage === "loading" && (
            <motion.div 
              key="loading" 
@@ -729,13 +840,15 @@ export default function App() {
               >
                 <Sparkles size={48} color="#AF52DE" />
               </motion.div>
-              <p style={{ marginTop: 20, color: '#86868B', fontWeight: 500 }}>Redirecting...</p>
+              <p style={{ marginTop: 20, color: '#86868B', fontWeight: 500 }}>
+                 {/* Logic to change text based on flow could go here */}
+                 Loading...
+              </p>
            </motion.div>
         )}
 
-        {/* State 3: Home Page */}
         {currentPage === "home" && (
-           <HomePage key="home" />
+           <HomePage key="home" onLogout={handleLogout} />
         )}
 
       </AnimatePresence>
