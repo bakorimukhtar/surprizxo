@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   motion, 
   AnimatePresence, 
@@ -6,14 +6,14 @@ import {
   useTransform, 
   useSpring 
 } from "framer-motion";
-import { Sparkles, Gift, Eye, EyeOff, ArrowRight, Check, ShieldCheck, User } from "lucide-react"; 
+import { 
+  Sparkles, Gift, Eye, EyeOff, ArrowRight, Check, 
+  ShieldCheck, User, ChevronLeft, Calendar, Smartphone, Mail, AlertCircle 
+} from "lucide-react"; 
 
 // NOTE: To use your actual logo locally:
-// 1. Place your 'logo.png' file in the 'src' folder.
-// 2. Uncomment the line below:
 // import logo from "../logo.png"; 
 
-// Modern, Mature iOS-styled CSS
 const styles = `
   :root {
     --ios-text-primary: #1D1D1F;
@@ -23,6 +23,9 @@ const styles = `
     --glass-bg: rgba(255, 255, 255, 0.65);
     --input-bg: rgba(235, 235, 245, 0.5);
     --focus-ring: rgba(175, 82, 222, 0.3);
+    --success-green: #34C759;
+    --warn-orange: #FF9500;
+    --error-red: #FF3B30;
   }
 
   body {
@@ -32,7 +35,6 @@ const styles = `
     background-color: #F5F5F7;
   }
 
-  /* Sophisticated Aurora Background */
   .auth-container {
     min-height: 100vh;
     display: flex;
@@ -55,31 +57,16 @@ const styles = `
     animation: auroraFloat 20s infinite alternate ease-in-out;
   }
 
-  .orb-1 {
-    top: -10%; left: -10%; width: 60vw; height: 60vw;
-    background: radial-gradient(circle, #E0F7FA, #E1BEE7);
-    animation-delay: 0s;
-  }
-
-  .orb-2 {
-    bottom: -10%; right: -10%; width: 50vw; height: 50vw;
-    background: radial-gradient(circle, #F3E5F5, #FFCDD2);
-    animation-delay: -5s;
-  }
-
-  .orb-3 {
-    top: 40%; left: 40%; width: 40vw; height: 40vw;
-    background: radial-gradient(circle, #E8EAF6, #FFFFFF);
-    opacity: 0.8;
-    animation-delay: -10s;
-  }
+  .orb-1 { top: -10%; left: -10%; width: 60vw; height: 60vw; background: radial-gradient(circle, #E0F7FA, #E1BEE7); animation-delay: 0s; }
+  .orb-2 { bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, #F3E5F5, #FFCDD2); animation-delay: -5s; }
+  .orb-3 { top: 40%; left: 40%; width: 40vw; height: 40vw; background: radial-gradient(circle, #E8EAF6, #FFFFFF); opacity: 0.8; animation-delay: -10s; }
 
   @keyframes auroraFloat {
     0% { transform: translate(0, 0) scale(1); }
     100% { transform: translate(30px, -20px) scale(1.05); }
   }
 
-  /* Professional Glass Card */
+  /* Glass Card */
   .auth-card {
     position: relative;
     z-index: 10;
@@ -89,212 +76,138 @@ const styles = `
     backdrop-filter: blur(30px) saturate(180%);
     -webkit-backdrop-filter: blur(30px) saturate(180%);
     border-radius: 24px;
-    padding: 48px 36px;
-    box-shadow: 
-      0 20px 40px rgba(0, 0, 0, 0.08),
-      0 0 0 1px var(--glass-border) inset;
+    padding: 40px 32px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--glass-border) inset;
     transform-style: preserve-3d;
+    min-height: 520px;
+    display: flex;
+    flex-direction: column;
   }
 
   /* Header */
-  .auth-header {
-    text-align: center;
-    margin-bottom: 30px;
-    transform: translateZ(20px);
-  }
-
-  .auth-title {
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--ios-text-primary);
-    margin: 16px 0 8px;
-    letter-spacing: -0.02em;
-  }
-
-  .auth-subtitle {
-    font-size: 16px;
+  .auth-header { text-align: center; margin-bottom: 24px; transform: translateZ(20px); position: relative; }
+  .auth-title { font-size: 28px; font-weight: 700; color: var(--ios-text-primary); margin: 12px 0 4px; letter-spacing: -0.02em; }
+  .auth-subtitle { font-size: 15px; color: var(--ios-text-secondary); font-weight: 400; line-height: 1.4; }
+  
+  /* Top Username Label */
+  .user-badge {
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 1.5px;
     color: var(--ios-text-secondary);
-    font-weight: 400;
-    line-height: 1.4;
+    font-weight: 500;
+    margin-top: 4px;
+    opacity: 0.8;
   }
 
-  /* Logo Box */
-  .auth-logo-box {
-    width: 72px; height: 72px;
-    background: #FFFFFF; 
-    display: flex; justify-content: center; align-items: center;
-    border-radius: 18px; margin: 0 auto;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
-    position: relative; z-index: 2;
-    transform-style: preserve-3d;
+  /* Back Button */
+  .back-btn {
+    position: absolute; left: 0; top: 0;
+    background: none; border: none; cursor: pointer;
+    color: var(--ios-text-primary); opacity: 0.6;
+    transition: opacity 0.2s;
   }
-
-  .auth-logo-icon {
-    width: 36px; height: 36px; color: #FF2D55;
-    filter: drop-shadow(0 4px 6px rgba(255, 45, 85, 0.3));
-  }
-
-  /* Segmented Control */
-  .auth-tabs-container {
-    background: rgba(118, 118, 128, 0.12);
-    padding: 2px;
-    border-radius: 9px;
-    margin-bottom: 24px;
-    display: flex;
-    position: relative;
-    height: 36px;
-    transform: translateZ(10px);
-  }
-
-  .auth-tab {
-    flex: 1; position: relative; z-index: 2;
-    font-size: 13px; font-weight: 600;
-    background: transparent; border: none; cursor: pointer;
-    transition: color 0.2s; color: #636366;
-    height: 100%; display: flex; align-items: center; justify-content: center;
-  }
-
-  .auth-tab.active { color: #000000; }
-
-  .tab-background {
-    position: absolute; top: 2px; left: 2px; bottom: 2px;
-    background: #FFFFFF;
-    border-radius: 7px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 0 1px rgba(0,0,0,0.05);
-  }
+  .back-btn:hover { opacity: 1; }
 
   /* Inputs */
-  .auth-form {
-    display: flex; flex-direction: column; gap: 16px;
-    transform: translateZ(15px);
-  }
-  
+  .auth-form { flex: 1; display: flex; flex-direction: column; gap: 16px; transform: translateZ(15px); }
   .input-wrapper { position: relative; width: 100%; }
-
+  
   .auth-input {
     width: 100%; padding: 16px 16px;
     border-radius: 12px; border: 1px solid transparent;
     background: var(--input-bg);
     font-size: 17px; color: var(--ios-text-primary);
-    outline: none; transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+    outline: none; transition: all 0.2s;
     box-sizing: border-box;
   }
-
-  .auth-input::placeholder { color: #aeaeb2; }
-
   .auth-input:focus {
-    background: #FFFFFF;
-    border-color: rgba(175, 82, 222, 0.5);
-    box-shadow: 0 0 0 4px var(--focus-ring);
-    transform: scale(1.02);
+    background: #FFFFFF; border-color: rgba(175, 82, 222, 0.5);
+    box-shadow: 0 0 0 4px var(--focus-ring); transform: scale(1.01);
   }
+  .auth-input.error { border-color: var(--error-red); background: rgba(255, 59, 48, 0.05); }
 
-  /* Password Toggle Button */
-  .password-toggle {
-    position: absolute; right: 16px; top: 50%;
-    transform: translateY(-50%);
-    background: none; border: none; cursor: pointer;
-    color: var(--ios-text-secondary); padding: 0;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .password-toggle:hover { color: #AF52DE; }
+  /* Password Strength */
+  .strength-bar-container { height: 4px; background: #E5E5EA; border-radius: 2px; margin-top: 8px; overflow: hidden; display: flex; }
+  .strength-segment { height: 100%; transition: all 0.3s ease; flex: 1; margin-right: 2px; opacity: 0.3; }
+  .strength-segment.active { opacity: 1; }
+  .strength-text { font-size: 11px; text-align: right; margin-top: 4px; font-weight: 600; transition: color 0.3s; }
 
-  /* OTP Input Styles */
-  .otp-container {
-    display: flex; gap: 12px; justify-content: center;
-    margin: 10px 0;
+  /* Age Calculator Box */
+  .age-box {
+    background: rgba(255,255,255,0.5); border-radius: 12px; padding: 12px;
+    display: flex; align-items: center; gap: 10px; margin-top: 8px;
+    border: 1px solid rgba(0,0,0,0.05);
   }
+  .age-text { font-size: 14px; font-weight: 500; color: var(--ios-text-primary); }
+  .age-sub { font-size: 12px; color: var(--ios-text-secondary); }
+
+  /* OTP */
+  .otp-container { display: flex; gap: 10px; justify-content: center; margin: 10px 0; }
   .otp-input {
-    width: 50px; height: 60px;
-    border-radius: 12px; border: 1px solid rgba(0,0,0,0.1);
-    background: #FFFFFF;
-    font-size: 24px; font-weight: 700; text-align: center;
-    color: var(--ios-text-primary); outline: none;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    width: 50px; height: 60px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.1);
+    background: #FFFFFF; font-size: 24px; font-weight: 700; text-align: center;
+    color: var(--ios-text-primary); outline: none; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .otp-input:focus { border-color: #AF52DE; box-shadow: 0 0 0 4px var(--focus-ring); transform: translateY(-2px); }
+
+  /* Buttons */
+  .auth-button {
+    margin-top: auto; padding: 16px; border: none; border-radius: 12px;
+    background: var(--brand-gradient); color: white; font-weight: 600; font-size: 17px;
+    cursor: pointer; width: 100%; box-shadow: 0 4px 12px rgba(175, 82, 222, 0.25);
+    position: relative; overflow: hidden; transform: translateZ(20px);
+    display: flex; justify-content: center; align-items: center; gap: 8px;
     transition: all 0.2s;
   }
-  .otp-input:focus {
-    border-color: #AF52DE;
-    box-shadow: 0 0 0 4px var(--focus-ring);
-    transform: translateY(-2px);
-  }
-
-  /* Button */
-  .auth-button {
-    margin-top: 12px; padding: 16px;
-    border: none; border-radius: 12px;
-    background: var(--brand-gradient);
-    color: white; font-weight: 600; font-size: 17px;
-    cursor: pointer; width: 100%;
-    box-shadow: 0 4px 12px rgba(175, 82, 222, 0.25);
-    position: relative; overflow: hidden;
-    transform: translateZ(20px);
-    display: flex; justify-content: center; align-items: center; gap: 8px;
-  }
+  .auth-button:disabled { background: #C7C7CC; cursor: not-allowed; box-shadow: none; }
   
-  .shimmer-effect {
-    position: absolute; top: 0; left: -100%;
-    width: 50%; height: 100%;
-    background: linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.3) 50%,
-      rgba(255, 255, 255, 0) 100%
-    );
-    transform: skewX(-20deg);
+  .secondary-btn {
+    background: transparent; color: #AF52DE; font-size: 14px; font-weight: 600;
+    border: none; cursor: pointer; padding: 8px; width: 100%; margin-top: 8px;
+  }
+  .secondary-btn:hover { text-decoration: underline; }
+
+  .password-toggle {
+    position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer; color: var(--ios-text-secondary);
   }
 
-  .auth-switch-text {
-    text-align: center; margin-top: 28px;
-    font-size: 14px; color: var(--ios-text-secondary);
-    transform: translateZ(10px);
-  }
-  .auth-switch-link {
-    color: #AF52DE; cursor: pointer; font-weight: 600;
-    margin-left: 5px; transition: color 0.2s;
-  }
-  .auth-switch-link:hover { color: #FF2D55; text-decoration: underline; }
-
-  /* Step Indicator */
-  .step-indicator {
-    display: flex; justify-content: center; gap: 6px; margin-bottom: 20px;
-  }
-  .step-dot {
-    width: 6px; height: 6px; border-radius: 50%; background: #E5E5EA;
-    transition: all 0.3s;
-  }
-  .step-dot.active { background: #AF52DE; width: 18px; border-radius: 4px; }
+  .switch-link { color: #AF52DE; cursor: pointer; font-weight: 600; margin-left: 5px; }
 `;
 
 // Animation Variants
 const containerVariants = {
   hidden: { opacity: 0 },
-  visible: { 
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.2 } 
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: { 
-    opacity: 1, y: 0,
-    transition: { type: "spring", stiffness: 300, damping: 24 }
-  },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
 
 const formTransition = { type: "spring", stiffness: 300, damping: 30 };
 
 export default function AuthPage() {
-  const [mode, setMode] = useState("login");
-  const [signupStep, setSignupStep] = useState(1); // 1: Info, 2: OTP, 3: Username
+  const [mode, setMode] = useState("login"); // 'login' or 'signup'
   
-  // Form State
+  // Signup Wizard State
+  const [step, setStep] = useState(1);
+  const [signupMethod, setSignupMethod] = useState('phone'); // 'phone' or 'email'
+  
+  // Form Data
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+    confirmPassword: '',
+    birthday: '',
+    phone: '',
+    email: '',
+    otp: ['', '', '', '']
+  });
+
+  // Derived State
+  const [passwordStrength, setPasswordStrength] = useState(0);
+  const [age, setAge] = useState(null);
+
+  // UI Toggles
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [otp, setOtp] = useState(["", "", "", ""]);
-  const [username, setUsername] = useState("");
-  
   const hasLocalLogo = false; 
 
   // --- 3D TILT LOGIC ---
@@ -309,42 +222,104 @@ export default function AuthPage() {
     y.set((clientY - top) / height - 0.5);
   }
 
-  function handleMouseLeave() {
-    x.set(0); y.set(0);
-  }
+  function handleMouseLeave() { x.set(0); y.set(0); }
 
   const rotateX = useTransform(mouseY, [-0.5, 0.5], [7, -7]);
   const rotateY = useTransform(mouseX, [-0.5, 0.5], [-7, 7]);
   const logoX = useTransform(mouseX, [-0.5, 0.5], [-15, 15]);
   const logoY = useTransform(mouseY, [-0.5, 0.5], [-15, 15]);
 
-  // Handle OTP Input
+  // --- LOGIC HANDLERS ---
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    // Live Password Logic
+    if (name === 'password') {
+      let score = 0;
+      if (value.length >= 8) score++;
+      if (/[A-Z]/.test(value)) score++;
+      if (/[0-9]/.test(value)) score++;
+      if (/[^A-Za-z0-9]/.test(value)) score++;
+      setPasswordStrength(score);
+    }
+
+    // Live Birthday Logic
+    if (name === 'birthday') {
+      const birthDate = new Date(value);
+      const today = new Date();
+      let calculatedAge = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        calculatedAge--;
+      }
+      setAge(calculatedAge);
+    }
+  };
+
   const handleOtpChange = (element, index) => {
     if (isNaN(element.value)) return;
-    const newOtp = [...otp];
+    const newOtp = [...formData.otp];
     newOtp[index] = element.value;
-    setOtp(newOtp);
-    // Focus next input
-    if (element.nextSibling && element.value) {
-      element.nextSibling.focus();
+    setFormData({ ...formData, otp: newOtp });
+    if (element.nextSibling && element.value) element.nextSibling.focus();
+  };
+
+  // Validation
+  const isStepValid = () => {
+    if (mode === 'login') return true; // simplified for login
+    switch (step) {
+      case 1: // Username
+        return /^[a-zA-Z0-9_]{4,20}$/.test(formData.username);
+      case 2: // Password
+        return passwordStrength >= 3 && formData.password === formData.confirmPassword;
+      case 3: // Birthday
+        return formData.birthday && age >= 18;
+      case 4: // Contact
+        if (signupMethod === 'phone') return formData.phone.length > 9;
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
+      case 5: // OTP
+        return formData.otp.every(digit => digit !== '');
+      default: return false;
     }
   };
 
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    if (mode === "login") {
-      alert("Logging in...");
-    } else {
-      if (signupStep === 1) setSignupStep(2);
-      else if (signupStep === 2) setSignupStep(3);
-      else alert("Welcome to Surprizxo! Entering App...");
+  const nextStep = () => {
+    if (isStepValid()) {
+      if (step === 4) setStep(5); // Go to OTP
+      else if (step === 5) alert("Welcome to Surprizxo!"); // Finish
+      else setStep(step + 1);
     }
   };
 
-  const switchMode = (newMode) => {
-    setMode(newMode);
-    setSignupStep(1); // Reset step when switching
-    setOtp(["", "", "", ""]);
+  const prevStep = () => {
+    if (step > 1) setStep(step - 1);
+    else setMode("login");
+  };
+
+  const getStepTitle = () => {
+    if (mode === 'login') return "Welcome Back";
+    switch(step) {
+      case 1: return "Create Username";
+      case 2: return "Create Password";
+      case 3: return "Your Birthday";
+      case 4: return signupMethod === 'phone' ? "Add Phone" : "Add Email";
+      case 5: return "Verification";
+      default: return "Sign Up";
+    }
+  };
+
+  const getStepDesc = () => {
+    if (mode === 'login') return "Login to continue gifting.";
+    switch(step) {
+      case 1: return "Pick a unique username. You can change this later.";
+      case 2: return "Secure your account with a strong password.";
+      case 3: return "This helps us confirm your age (18+ only).";
+      case 4: return `Enter your ${signupMethod} to verify your account.`;
+      case 5: return `Enter the code sent to your ${signupMethod}.`;
+      default: return "";
+    }
   };
 
   return (
@@ -368,229 +343,176 @@ export default function AuthPage() {
         >
           {/* Header */}
           <div className="auth-header">
+            {(mode === 'signup' && step > 1) || (mode === 'signup' && step === 1) ? (
+              <button onClick={prevStep} className="back-btn">
+                <ChevronLeft size={28} />
+              </button>
+            ) : null}
+
             <motion.div 
-              className="auth-logo-box"
-              variants={itemVariants}
-              style={{ x: logoX, y: logoY }}
+              style={{ x: logoX, y: logoY, width: 48, height: 48, background: '#FFF', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
               whileHover={{ scale: 1.1, rotate: 5 }}
-              whileTap={{ scale: 0.95 }}
             >
-              {hasLocalLogo ? null : <Gift className="auth-logo-icon" />}
+               {hasLocalLogo ? null : <Gift color="#FF2D55" size={24} />}
             </motion.div>
-            
-            <motion.h1 className="auth-title" variants={itemVariants}>
-              Surprizxo
-            </motion.h1>
-            
-            <motion.p className="auth-subtitle" variants={itemVariants}>
-              {mode === "login" 
-                ? "Welcome back, ready to gift?" 
-                : signupStep === 1 
-                  ? "Create your account" 
-                  : signupStep === 2 
-                    ? "Verify your email" 
-                    : "Choose your identity"}
-            </motion.p>
+
+            {/* REQUIREMENT 1: Top Center Username Label */}
+            {mode === 'signup' && step > 1 && formData.username && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }} 
+                animate={{ opacity: 1, y: 0 }}
+                className="user-badge"
+              >
+                @{formData.username}
+              </motion.div>
+            )}
+
+            <motion.h1 className="auth-title" key={step}>{getStepTitle()}</motion.h1>
+            <motion.p className="auth-subtitle" key={`${step}-sub`}>{getStepDesc()}</motion.p>
           </div>
 
-          {/* Step Indicator for Signup */}
-          {mode === "signup" && (
-            <motion.div className="step-indicator" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-              <div className={`step-dot ${signupStep >= 1 ? "active" : ""}`} />
-              <div className={`step-dot ${signupStep >= 2 ? "active" : ""}`} />
-              <div className={`step-dot ${signupStep >= 3 ? "active" : ""}`} />
-            </motion.div>
-          )}
-
-          {/* Tabs - Only show on Step 1 of Signup or Login */}
-          {(mode === "login" || (mode === "signup" && signupStep === 1)) && (
-            <motion.div className="auth-tabs-container" variants={itemVariants}>
-              <motion.div 
-                className="tab-background" 
-                style={{ width: "calc(50% - 4px)" }}
-                animate={{ x: mode === "login" ? 0 : "100%" }}
-                transition={{ type: "spring", stiffness: 500, damping: 30 }}
-              />
-              <button onClick={() => switchMode("login")} className={`auth-tab ${mode === "login" ? "active" : ""}`}>Log In</button>
-              <button onClick={() => switchMode("signup")} className={`auth-tab ${mode === "signup" ? "active" : ""}`}>Sign Up</button>
-            </motion.div>
-          )}
-
-          <form className="auth-form" onSubmit={handleFormSubmit}>
-            <AnimatePresence mode="popLayout" custom={signupStep}>
+          {/* Form Area */}
+          <div className="auth-form">
+            <AnimatePresence mode="popLayout" custom={step}>
               
-              {/* === LOGIN MODE === */}
-              {mode === "login" && (
-                <motion.div
-                  key="login-form"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  transition={formTransition}
-                  style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
-                >
+              {/* === LOGIN === */}
+              {mode === 'login' && (
+                <motion.div key="login" initial={{opacity:0, x:-20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:20}} transition={formTransition} style={{display:'flex', flexDirection:'column', gap:16}}>
+                   <input type="email" placeholder="Email" className="auth-input" />
+                   <div className="input-wrapper">
+                     <input type={showPassword ? "text" : "password"} placeholder="Password" className="auth-input" />
+                     <button type="button" className="password-toggle" onClick={() => setShowPassword(!showPassword)}>
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                     </button>
+                   </div>
+                   <button className="auth-button" onClick={() => alert("Logging in...")}>Log In <ArrowRight size={18} /></button>
+                   <p style={{textAlign:'center', color:'#86868B', fontSize:14, marginTop:10}}>
+                     Don't have an account? <span onClick={() => { setMode('signup'); setStep(1); }} className="switch-link">Sign Up</span>
+                   </p>
+                </motion.div>
+              )}
+
+              {/* === STEP 1: USERNAME === */}
+              {mode === 'signup' && step === 1 && (
+                <motion.div key="step1" initial={{opacity:0, x:20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:-20}} transition={formTransition} style={{display:'flex', flexDirection:'column', gap:16}}>
                   <div className="input-wrapper">
-                    <input type="email" placeholder="Email" className="auth-input" required />
-                  </div>
-                  <div className="input-wrapper">
+                    <User size={20} color="#86868B" style={{position:'absolute', left:16, top:16}} />
                     <input 
-                      type={showPassword ? "text" : "password"} 
-                      placeholder="Password" 
+                      name="username"
+                      value={formData.username}
+                      onChange={handleInputChange}
+                      placeholder="Username" 
                       className="auth-input" 
-                      required 
+                      style={{paddingLeft: 44}}
                     />
+                    {isStepValid() && <Check size={20} color="#34C759" style={{position:'absolute', right:16, top:16}} />}
+                  </div>
+                  <div style={{fontSize:12, color:'#86868B', paddingLeft:4}}>
+                    • Must be unique<br/>• 4-20 characters<br/>• Letters, numbers, underscores
+                  </div>
+                </motion.div>
+              )}
+
+              {/* === STEP 2: PASSWORD === */}
+              {mode === 'signup' && step === 2 && (
+                <motion.div key="step2" initial={{opacity:0, x:20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:-20}} transition={formTransition} style={{display:'flex', flexDirection:'column', gap:16}}>
+                  <div className="input-wrapper">
+                    <input name="password" type={showPassword ? "text" : "password"} value={formData.password} onChange={handleInputChange} placeholder="Password" className="auth-input" />
                     <button type="button" className="password-toggle" onClick={() => setShowPassword(!showPassword)}>
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                       {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>
-                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="auth-button" type="submit">
-                    <motion.div 
-                       className="shimmer-effect"
-                       animate={{ left: ["-100%", "200%"] }}
-                       transition={{ repeat: Infinity, duration: 2, ease: "linear", delay: 1 }}
-                    />
-                    <span>Log In</span>
-                    <ArrowRight size={18} />
-                  </motion.button>
+                  
+                  {/* Password Strength Bar */}
+                  <div>
+                    <div className="strength-bar-container">
+                      <div className={`strength-segment ${passwordStrength >= 1 ? 'active' : ''}`} style={{background: 'var(--error-red)'}} />
+                      <div className={`strength-segment ${passwordStrength >= 3 ? 'active' : ''}`} style={{background: 'var(--warn-orange)'}} />
+                      <div className={`strength-segment ${passwordStrength >= 4 ? 'active' : ''}`} style={{background: 'var(--success-green)'}} />
+                    </div>
+                    <div className="strength-text" style={{
+                      color: passwordStrength < 2 ? 'var(--error-red)' : passwordStrength < 4 ? 'var(--warn-orange)' : 'var(--success-green)'
+                    }}>
+                      {passwordStrength < 2 ? "Weak" : passwordStrength < 4 ? "Fair" : "Strong"}
+                    </div>
+                  </div>
+
+                  <input name="confirmPassword" type="password" value={formData.confirmPassword} onChange={handleInputChange} placeholder="Confirm Password" className="auth-input" />
                 </motion.div>
               )}
 
-              {/* === SIGNUP MODE: STEP 1 (Details) === */}
-              {mode === "signup" && signupStep === 1 && (
-                <motion.div
-                  key="step1"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={formTransition}
-                  style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
-                >
-                  <input type="text" placeholder="Full Name" className="auth-input" required />
-                  <input type="email" placeholder="Email Address" className="auth-input" required />
-                  
+              {/* === STEP 3: BIRTHDAY === */}
+              {mode === 'signup' && step === 3 && (
+                <motion.div key="step3" initial={{opacity:0, x:20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:-20}} transition={formTransition} style={{display:'flex', flexDirection:'column', gap:16}}>
                   <div className="input-wrapper">
-                    <input 
-                      type={showPassword ? "text" : "password"} 
-                      placeholder="Password" 
-                      className="auth-input" 
-                      required 
-                    />
-                    <button type="button" className="password-toggle" onClick={() => setShowPassword(!showPassword)}>
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                    </button>
+                    <Calendar size={20} color="#86868B" style={{position:'absolute', left:16, top:16}} />
+                    <input type="date" name="birthday" value={formData.birthday} onChange={handleInputChange} className="auth-input" style={{paddingLeft:44}} />
                   </div>
 
-                  <div className="input-wrapper">
-                    <input 
-                      type={showConfirmPassword ? "text" : "password"} 
-                      placeholder="Confirm Password" 
-                      className="auth-input" 
-                      required 
-                    />
-                    <button type="button" className="password-toggle" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
-                      {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                    </button>
-                  </div>
-
-                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="auth-button" type="submit">
-                    <span>Continue</span>
-                    <ArrowRight size={18} />
-                  </motion.button>
+                  {age !== null && (
+                    <div className="age-box" style={{ borderColor: age < 18 ? 'var(--error-red)' : 'var(--success-green)' }}>
+                      {age < 18 ? <AlertCircle color="var(--error-red)" size={24} /> : <Check color="var(--success-green)" size={24} />}
+                      <div>
+                        <div className="age-text">You are {age} years old</div>
+                        {age < 18 && <div className="age-sub" style={{color:'var(--error-red)'}}>You must be 18+ to sign up.</div>}
+                      </div>
+                    </div>
+                  )}
                 </motion.div>
               )}
 
-              {/* === SIGNUP MODE: STEP 2 (OTP) === */}
-              {mode === "signup" && signupStep === 2 && (
-                <motion.div
-                  key="step2"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={formTransition}
-                  style={{ display: 'flex', flexDirection: 'column', gap: 20, textAlign: 'center' }}
-                >
-                  <div style={{ color: '#86868B', fontSize: '14px' }}>
-                    <ShieldCheck size={48} color="#AF52DE" style={{ marginBottom: 10, display: 'block', margin: '0 auto' }} />
-                    Enter the 4-digit code sent to your email.
-                  </div>
-                  
-                  <div className="otp-container">
-                    {otp.map((data, index) => (
-                      <input
-                        key={index}
-                        type="text"
-                        maxLength="1"
-                        className="otp-input"
-                        value={data}
-                        onChange={(e) => handleOtpChange(e.target, index)}
-                        onFocus={(e) => e.target.select()}
-                      />
-                    ))}
-                  </div>
-
-                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="auth-button" type="submit">
-                    <span>Verify Code</span>
-                    <ArrowRight size={18} />
-                  </motion.button>
-                  
-                  <span 
-                    onClick={() => setSignupStep(1)} 
-                    style={{ fontSize: '13px', color: '#AF52DE', cursor: 'pointer', marginTop: '10px' }}
-                  >
-                    Back to details
-                  </span>
+              {/* === STEP 4: CONTACT === */}
+              {mode === 'signup' && step === 4 && (
+                <motion.div key="step4" initial={{opacity:0, x:20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:-20}} transition={formTransition} style={{display:'flex', flexDirection:'column', gap:16}}>
+                   {signupMethod === 'phone' ? (
+                     <div style={{display:'flex', gap:10}}>
+                       <div className="auth-input" style={{width:80, textAlign:'center', display:'flex', alignItems:'center', justifyContent:'center'}}>🇳🇬 +234</div>
+                       <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="80 123 4567" className="auth-input" />
+                     </div>
+                   ) : (
+                     <div className="input-wrapper">
+                       <Mail size={20} color="#86868B" style={{position:'absolute', left:16, top:16}} />
+                       <input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="name@example.com" className="auth-input" style={{paddingLeft:44}} />
+                     </div>
+                   )}
+                   
+                   <button type="button" className="secondary-btn" onClick={() => setSignupMethod(signupMethod === 'phone' ? 'email' : 'phone')}>
+                     {signupMethod === 'phone' ? "Sign up with email instead" : "Sign up with phone instead"}
+                   </button>
                 </motion.div>
               )}
 
-              {/* === SIGNUP MODE: STEP 3 (Username) === */}
-              {mode === "signup" && signupStep === 3 && (
-                <motion.div
-                  key="step3"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={formTransition}
-                  style={{ display: 'flex', flexDirection: 'column', gap: 20, textAlign: 'center' }}
-                >
-                  <User size={48} color="#AF52DE" style={{ margin: '0 auto' }} />
-                  
-                  <div className="input-wrapper">
-                    <span style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: '#86868B', fontWeight: 'bold' }}>@</span>
-                    <input 
-                      type="text" 
-                      placeholder="username" 
-                      className="auth-input" 
-                      style={{ paddingLeft: 35 }}
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      required 
-                    />
-                  </div>
-
-                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="auth-button" type="submit">
-                    <motion.div 
-                       className="shimmer-effect"
-                       animate={{ left: ["-100%", "200%"] }}
-                       transition={{ repeat: Infinity, duration: 2, ease: "linear", delay: 1 }}
-                    />
-                    <span>Enter App</span>
-                    <Check size={18} />
-                  </motion.button>
-                </motion.div>
+              {/* === STEP 5: OTP === */}
+              {mode === 'signup' && step === 5 && (
+                 <motion.div key="step5" initial={{opacity:0, x:20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:-20}} transition={formTransition} style={{display:'flex', flexDirection:'column', gap:20, alignItems:'center'}}>
+                    <ShieldCheck size={48} color="#AF52DE" />
+                    <div className="otp-container">
+                      {formData.otp.map((digit, i) => (
+                        <input key={i} type="text" maxLength={1} value={digit} onChange={(e) => handleOtpChange(e.target, i)} className="otp-input" />
+                      ))}
+                    </div>
+                 </motion.div>
               )}
-
             </AnimatePresence>
-          </form>
+          </div>
 
-          {/* Bottom Switch Text (Only for Login or Step 1) */}
-          {(mode === "login" || (mode === "signup" && signupStep === 1)) && (
-            <motion.p className="auth-switch-text" variants={itemVariants}>
-              {mode === "login" ? (
-                <>Don’t have an account? <span onClick={() => switchMode("signup")} className="auth-switch-link">Sign Up</span></>
-              ) : (
-                <>Already have an account? <span onClick={() => switchMode("login")} className="auth-switch-link">Log In</span></>
+          {/* Footer Actions (Signup Only) */}
+          {mode === 'signup' && (
+            <div style={{ marginTop: '20px' }}>
+              <button 
+                onClick={nextStep} 
+                disabled={!isStepValid()} 
+                className="auth-button"
+              >
+                {step === 5 ? "Complete Signup" : "Next"} <ArrowRight size={18} />
+              </button>
+              
+              {step === 1 && (
+                <p style={{textAlign:'center', color:'#86868B', fontSize:14, marginTop:10}}>
+                   Already have an account? <span onClick={() => setMode('login')} className="switch-link">Log In</span>
+                </p>
               )}
-            </motion.p>
+            </div>
           )}
 
         </motion.div>
