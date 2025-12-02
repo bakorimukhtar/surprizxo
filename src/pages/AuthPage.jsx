@@ -30,24 +30,24 @@ const styles = `
     --warn-orange: #FF9500;
     --error-red: #FF3B30;
     --app-bg: #F5F5F7;
-    --max-app-width: 480px; /* Standardize max width */
+    --max-app-width: 480px; 
   }
 
   * {
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
   }
 
   body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    background-color: var(--app-bg);
-    /* Ensure background covers full screen on desktop */
+    background-color: #F2F2F7;
     min-height: 100vh;
+    /* Center app on desktop, top-align on mobile */
     display: flex;
     justify-content: center;
-    background: #F2F2F7; 
+    align-items: flex-start; 
   }
 
   /* --- GLOBAL ANIMATIONS & BACKGROUNDS --- */
@@ -72,38 +72,41 @@ const styles = `
   /* --- AUTH STYLES --- */
   .auth-container {
     width: 100%;
+    max-width: var(--max-app-width);
+    /* Mobile-first height using dvh (Dynamic Viewport Height) to handle address bars */
     min-height: 100vh;
+    min-height: 100dvh; 
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 20px;
+    padding-top: max(20px, env(safe-area-inset-top));
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
     position: relative;
     overflow: hidden;
     background: #FBFBFD;
-    perspective: 1000px;
-    max-width: var(--max-app-width);
     margin: 0 auto;
-    box-shadow: 0 0 40px rgba(0,0,0,0.05); /* Shadow for desktop view */
   }
 
   .auth-card {
     position: relative;
     z-index: 10;
     width: 100%;
-    max-width: 400px;
     background: var(--glass-bg);
     backdrop-filter: blur(30px) saturate(180%);
     -webkit-backdrop-filter: blur(30px) saturate(180%);
     border-radius: 24px;
-    padding: 40px 32px;
+    padding: 32px 24px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--glass-border) inset;
-    transform-style: preserve-3d;
-    min-height: 520px;
     display: flex;
     flex-direction: column;
+    /* Ensure card doesn't overflow vertically on very small screens */
+    max-height: 100%;
+    overflow-y: auto;
   }
 
-  .auth-header { text-align: center; margin-bottom: 24px; transform: translateZ(20px); position: relative; }
+  .auth-header { text-align: center; margin-bottom: 24px; position: relative; }
   .auth-title { font-size: 28px; font-weight: 700; color: var(--ios-text-primary); margin: 12px 0 4px; letter-spacing: -0.02em; }
   .auth-subtitle { font-size: 15px; color: var(--ios-text-secondary); font-weight: 400; line-height: 1.4; }
   
@@ -133,17 +136,19 @@ const styles = `
     background: none; border: none; cursor: pointer;
     color: var(--ios-text-primary); opacity: 0.6;
     transition: opacity 0.2s;
+    padding: 0;
   }
   .back-btn:hover { opacity: 1; }
 
-  .auth-form { flex: 1; display: flex; flex-direction: column; gap: 16px; transform: translateZ(15px); }
+  .auth-form { flex: 1; display: flex; flex-direction: column; gap: 16px; }
   .input-wrapper { position: relative; width: 100%; }
   
   .auth-input {
     width: 100%; padding: 16px 16px;
     border-radius: 12px; border: 1px solid transparent;
     background: var(--input-bg);
-    font-size: 17px; color: var(--ios-text-primary);
+    font-size: 17px; /* 16px+ prevents iOS zoom on focus */
+    color: var(--ios-text-primary);
     outline: none; transition: all 0.2s;
     box-sizing: border-box;
   }
@@ -165,11 +170,12 @@ const styles = `
   .age-text { font-size: 14px; font-weight: 500; color: var(--ios-text-primary); }
   .age-sub { font-size: 12px; color: var(--ios-text-secondary); }
 
-  .otp-container { display: flex; gap: 10px; justify-content: center; margin: 10px 0; }
+  .otp-container { display: flex; gap: 8px; justify-content: center; margin: 10px 0; }
   .otp-input {
-    width: 50px; height: 60px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.1);
-    background: #FFFFFF; font-size: 24px; font-weight: 700; text-align: center;
+    width: 45px; height: 55px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.1);
+    background: #FFFFFF; font-size: 22px; font-weight: 700; text-align: center;
     color: var(--ios-text-primary); outline: none; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    padding: 0;
   }
   .otp-input:focus { border-color: #AF52DE; box-shadow: 0 0 0 4px var(--focus-ring); transform: translateY(-2px); }
 
@@ -177,7 +183,7 @@ const styles = `
     margin-top: auto; padding: 16px; border: none; border-radius: 12px;
     background: var(--brand-gradient); color: white; font-weight: 600; font-size: 17px;
     cursor: pointer; width: 100%; box-shadow: 0 4px 12px rgba(175, 82, 222, 0.25);
-    position: relative; overflow: hidden; transform: translateZ(20px);
+    position: relative; overflow: hidden;
     display: flex; justify-content: center; align-items: center; gap: 8px;
     transition: all 0.2s;
   }
@@ -192,27 +198,32 @@ const styles = `
   .password-toggle {
     position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
     background: none; border: none; cursor: pointer; color: var(--ios-text-secondary);
+    padding: 0;
   }
   .switch-link { color: #AF52DE; cursor: pointer; font-weight: 600; margin-left: 5px; }
 
   /* --- DASHBOARD & PROFILE STYLES --- */
   .dashboard-container {
     width: 100%;
+    max-width: var(--max-app-width);
     min-height: 100vh;
+    min-height: 100dvh;
     background: #FBFBFD;
     display: flex;
     flex-direction: column;
-    padding-bottom: 80px; /* Space for navbar */
-    max-width: var(--max-app-width);
+    /* Bottom padding handles navbar + safe area */
+    padding-bottom: calc(70px + env(safe-area-inset-bottom) + 20px); 
     margin: 0 auto;
     position: relative;
-    box-shadow: 0 0 40px rgba(0,0,0,0.05); /* Enhanced shadow for desktop */
     overflow-y: auto;
     overflow-x: hidden;
+    /* Native scrolling */
+    -webkit-overflow-scrolling: touch; 
   }
 
   .dash-header {
     padding: 20px 20px 10px;
+    padding-top: max(20px, env(safe-area-inset-top));
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -245,7 +256,6 @@ const styles = `
     z-index: 5;
   }
 
-  /* Wishlist Horizontal Scroll */
   .wishlist-scroll {
     display: flex;
     overflow-x: auto;
@@ -254,7 +264,6 @@ const styles = `
     scrollbar-width: none; 
     position: relative;
     z-index: 5;
-    /* Ensure scrolling feels native */
     -webkit-overflow-scrolling: touch;
   }
   .wishlist-scroll::-webkit-scrollbar { display: none; }
@@ -297,7 +306,6 @@ const styles = `
     z-index: 2;
   }
 
-  /* Banner */
   .promo-banner {
     margin: 10px 20px;
     background: var(--brand-gradient);
@@ -315,7 +323,6 @@ const styles = `
   .banner-content h3 { margin: 0; font-size: 20px; width: 60%; line-height: 1.2; font-weight: 700; }
   .banner-icon { font-size: 24px; font-weight: 800; opacity: 0.9; }
 
-  /* Main Card */
   .main-card {
     margin: 10px 20px;
     background: var(--glass-bg);
@@ -389,18 +396,21 @@ const styles = `
     right: 0;
     margin: 0 auto;
     max-width: var(--max-app-width);
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.95); /* Slightly less transparent for legibility */
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-top: 1px solid rgba(255,255,255,0.5);
+    border-top: 1px solid rgba(0,0,0,0.05);
     height: 70px;
+    /* Extend padding for safe area on newer iPhones */
+    padding-bottom: env(safe-area-inset-bottom);
+    box-sizing: content-box; /* Allow height to expand with padding */
     border-top-left-radius: 24px;
     border-top-right-radius: 24px;
     display: flex;
     justify-content: space-around;
-    align-items: center;
+    align-items: flex-start; /* Align icons to top part of navbar */
+    padding-top: 15px;
     box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
-    padding-bottom: 10px; 
     z-index: 50;
   }
   .nav-item {
@@ -408,7 +418,7 @@ const styles = `
     opacity: 0.8;
     cursor: pointer;
     transition: 0.2s;
-    padding: 10px; /* Better touch target */
+    padding: 5px 15px;
   }
   .nav-item.active {
     color: #AF52DE;
@@ -423,7 +433,7 @@ const styles = `
     justify-content: center;
     align-items: center;
     color: white;
-    margin-top: -30px;
+    margin-top: -35px; /* Pull up */
     box-shadow: 0 10px 20px rgba(175, 82, 222, 0.3);
     transform: rotate(0deg);
     transition: transform 0.2s;
@@ -435,7 +445,7 @@ const styles = `
   .profile-header {
     display: flex; flex-direction: column; align-items: center;
     margin-bottom: 24px; position: relative; z-index: 5;
-    padding-top: 20px;
+    padding-top: max(20px, env(safe-area-inset-top));
   }
   .profile-avatar {
     width: 100px; height: 100px; border-radius: 50%;
@@ -475,18 +485,39 @@ const styles = `
     color: #AF52DE;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   }
-  .logout-btn {
-    color: var(--error-red);
-  }
+  .logout-btn { color: var(--error-red); }
 
-  /* Responsive Adjustments for Desktop */
+  /* Desktop-Specific Enhancements */
   @media (min-width: 768px) {
-    /* When on desktop, we show a nice background outside the app container */
     body {
        background-image: radial-gradient(#F3E5F5 2px, transparent 2px);
        background-size: 32px 32px;
        background-color: #F8F8FA;
+       align-items: center; /* Center vertically on desktop */
     }
+    
+    .auth-container, .dashboard-container {
+       /* Add card-like appearance on desktop */
+       box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+       border-radius: 40px;
+       height: 90vh; /* Fixed height for app look */
+       min-height: auto;
+       margin-top: 0;
+       overflow: hidden; /* Use internal scrolling */
+    }
+    
+    /* Ensure content scrolls inside the container on desktop */
+    .dashboard-container {
+       overflow-y: auto;
+    }
+    
+    .auth-card {
+       box-shadow: none; /* Flatten inner card on desktop since container has shadow */
+       background: transparent;
+    }
+    
+    /* Hide scrollbars for cleaner look */
+    ::-webkit-scrollbar { width: 0px; }
   }
 `;
 
@@ -525,10 +556,10 @@ function AuthPage({ onLogin }) {
   }
   function handleMouseLeave() { x.set(0); y.set(0); }
 
-  const rotateX = useTransform(mouseY, [-0.5, 0.5], [7, -7]);
-  const rotateY = useTransform(mouseX, [-0.5, 0.5], [-7, 7]);
-  const logoX = useTransform(mouseX, [-0.5, 0.5], [-15, 15]);
-  const logoY = useTransform(mouseY, [-0.5, 0.5], [-15, 15]);
+  const rotateX = useTransform(mouseY, [-0.5, 0.5], [5, -5]); // Reduced tilt for robustness
+  const rotateY = useTransform(mouseX, [-0.5, 0.5], [-5, 5]);
+  const logoX = useTransform(mouseX, [-0.5, 0.5], [-10, 10]);
+  const logoY = useTransform(mouseY, [-0.5, 0.5], [-10, 10]);
 
   // Handlers
   const handleInputChange = (e) => {
@@ -767,7 +798,7 @@ function HomePage({ onLogout }) {
           <motion.div key="profile" initial={{opacity:0, x: 20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:-20}} transition={{duration:0.3}} style={{paddingBottom: 20}}>
             <div className="profile-header">
                {/* Updated to a reliable Unsplash image */}
-               <img src="https://unsplash.com/photos/man-in-white-crew-neck-shirt-wearing-black-framed-eyeglasses-C8Ta0gwPbQg" alt="Avatar" className="profile-avatar" />
+               <img src="https://lh3.googleusercontent.com/d/1HNer8YgeFb4rJkxalqskyPhbSUgsBnZV" alt="Avatar" className="profile-avatar" />
                <div className="profile-name">Mukhtar Abdullahi</div>
                <div className="profile-handle">@bakori</div>
                <button className="chat-btn" style={{position:'absolute', top: 20, right: 20}}>
