@@ -89,6 +89,18 @@ const styles = `
   .auth-title { font-size: 28px; font-weight: 700; color: var(--ios-text-primary); margin: 12px 0 4px; letter-spacing: -0.02em; }
   .auth-subtitle { font-size: 15px; color: var(--ios-text-secondary); font-weight: 400; line-height: 1.4; }
   
+  /* New Text Logo Style */
+  .auth-logo-text {
+    font-size: 26px;
+    font-weight: 800;
+    background: var(--brand-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.02em;
+    margin: 0 auto;
+    display: inline-block;
+  }
+
   /* Top Username Label */
   .user-badge {
     text-transform: uppercase;
@@ -208,8 +220,7 @@ export default function AuthPage() {
 
   // UI Toggles
   const [showPassword, setShowPassword] = useState(false);
-  const hasLocalLogo = false; 
-
+  
   // --- 3D TILT LOGIC ---
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -349,11 +360,12 @@ export default function AuthPage() {
               </button>
             ) : null}
 
+            {/* NEW TEXT LOGO */}
             <motion.div 
-              style={{ x: logoX, y: logoY, width: 48, height: 48, background: '#FFF', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-              whileHover={{ scale: 1.1, rotate: 5 }}
+              style={{ x: logoX, y: logoY, margin: '0 auto', textAlign: 'center' }}
+              whileHover={{ scale: 1.05 }}
             >
-               {hasLocalLogo ? null : <Gift color="#FF2D55" size={24} />}
+               <h1 className="auth-logo-text">SURPRIZXO</h1>
             </motion.div>
 
             {/* REQUIREMENT 1: Top Center Username Label */}
