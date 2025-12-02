@@ -7,10 +7,11 @@ import {
   useSpring 
 } from "framer-motion";
 import { 
-  Sparkles, Gift, Eye, EyeOff, ArrowRight, Check, 
-  ShieldCheck, User, ChevronLeft, Calendar, Smartphone, Mail, AlertCircle,
-  Home, Heart, ShoppingBag, Plus, MessageCircle, Settings, LogOut, 
-  Bell, Shield, CircleUser, ChevronRight, Edit3
+  // Icons grouped by category
+  Sparkles, Gift, Eye, EyeOff, ArrowRight, Check, ShieldCheck, 
+  User, ChevronLeft, Calendar, Smartphone, Mail, AlertCircle,
+  Home, Heart, ShoppingBag, Plus, MessageCircle, Settings, 
+  LogOut, Bell, Shield, CircleUser, ChevronRight, Edit3
 } from "lucide-react"; 
 
 // --- STYLES ---
@@ -29,6 +30,12 @@ const styles = `
     --warn-orange: #FF9500;
     --error-red: #FF3B30;
     --app-bg: #F5F5F7;
+    --max-app-width: 480px; /* Standardize max width */
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
@@ -36,27 +43,21 @@ const styles = `
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     background-color: var(--app-bg);
-  }
-
-  /* --- AUTH STYLES --- */
-  .auth-container {
+    /* Ensure background covers full screen on desktop */
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
-    padding: 20px;
-    position: relative;
-    overflow: hidden;
-    background: #FBFBFD;
-    perspective: 1000px;
+    background: #F2F2F7; 
   }
 
+  /* --- GLOBAL ANIMATIONS & BACKGROUNDS --- */
   .aurora-orb {
     position: absolute;
     border-radius: 50%;
     filter: blur(80px);
     opacity: 0.5;
     z-index: 0;
+    pointer-events: none;
     animation: auroraFloat 20s infinite alternate ease-in-out;
   }
   .orb-1 { top: -10%; left: -10%; width: 60vw; height: 60vw; background: radial-gradient(circle, #E0F7FA, #E1BEE7); }
@@ -66,6 +67,23 @@ const styles = `
   @keyframes auroraFloat {
     0% { transform: translate(0, 0) scale(1); }
     100% { transform: translate(30px, -20px) scale(1.05); }
+  }
+
+  /* --- AUTH STYLES --- */
+  .auth-container {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    background: #FBFBFD;
+    perspective: 1000px;
+    max-width: var(--max-app-width);
+    margin: 0 auto;
+    box-shadow: 0 0 40px rgba(0,0,0,0.05); /* Shadow for desktop view */
   }
 
   .auth-card {
@@ -185,10 +203,10 @@ const styles = `
     display: flex;
     flex-direction: column;
     padding-bottom: 80px; /* Space for navbar */
-    max-width: 480px; 
+    max-width: var(--max-app-width);
     margin: 0 auto;
     position: relative;
-    box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    box-shadow: 0 0 40px rgba(0,0,0,0.05); /* Enhanced shadow for desktop */
     overflow-y: auto;
     overflow-x: hidden;
   }
@@ -227,7 +245,7 @@ const styles = `
     z-index: 5;
   }
 
-  /* Wishlist Circles */
+  /* Wishlist Horizontal Scroll */
   .wishlist-scroll {
     display: flex;
     overflow-x: auto;
@@ -236,6 +254,8 @@ const styles = `
     scrollbar-width: none; 
     position: relative;
     z-index: 5;
+    /* Ensure scrolling feels native */
+    -webkit-overflow-scrolling: touch;
   }
   .wishlist-scroll::-webkit-scrollbar { display: none; }
   
@@ -245,7 +265,11 @@ const styles = `
     display: flex;
     flex-direction: column;
     align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s;
   }
+  .wishlist-item:active { transform: scale(0.95); }
+
   .wish-circle {
     width: 70px;
     height: 70px;
@@ -254,6 +278,7 @@ const styles = `
     padding: 3px;
     background: rgba(255,255,255,0.9);
     overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
   }
   .wish-img {
     width: 100%;
@@ -285,6 +310,7 @@ const styles = `
     box-shadow: 0 10px 25px rgba(175, 82, 222, 0.3);
     position: relative;
     z-index: 5;
+    cursor: pointer;
   }
   .banner-content h3 { margin: 0; font-size: 20px; width: 60%; line-height: 1.2; font-weight: 700; }
   .banner-icon { font-size: 24px; font-weight: 800; opacity: 0.9; }
@@ -362,7 +388,7 @@ const styles = `
     left: 0; 
     right: 0;
     margin: 0 auto;
-    max-width: 480px; 
+    max-width: var(--max-app-width);
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -382,6 +408,7 @@ const styles = `
     opacity: 0.8;
     cursor: pointer;
     transition: 0.2s;
+    padding: 10px; /* Better touch target */
   }
   .nav-item.active {
     color: #AF52DE;
@@ -400,6 +427,7 @@ const styles = `
     box-shadow: 0 10px 20px rgba(175, 82, 222, 0.3);
     transform: rotate(0deg);
     transition: transform 0.2s;
+    cursor: pointer;
   }
   .fab-add:active { transform: scale(0.95); }
 
@@ -450,6 +478,16 @@ const styles = `
   .logout-btn {
     color: var(--error-red);
   }
+
+  /* Responsive Adjustments for Desktop */
+  @media (min-width: 768px) {
+    /* When on desktop, we show a nice background outside the app container */
+    body {
+       background-image: radial-gradient(#F3E5F5 2px, transparent 2px);
+       background-size: 32px 32px;
+       background-color: #F8F8FA;
+    }
+  }
 `;
 
 // --- ANIMATION VARIANTS ---
@@ -459,19 +497,22 @@ const containerVariants = {
 };
 const formTransition = { type: "spring", stiffness: 300, damping: 30 };
 
-// --- COMPONENTS ---
-
+// --- AUTH COMPONENT ---
 function AuthPage({ onLogin }) {
   const [mode, setMode] = useState("login");
   const [step, setStep] = useState(1);
   const [signupMethod, setSignupMethod] = useState('phone');
+  
+  // Form State
   const [formData, setFormData] = useState({
     username: '', password: '', confirmPassword: '', birthday: '', phone: '', email: '', otp: ['', '', '', '']
   });
+  
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [age, setAge] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   
+  // 3D Motion Logic
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const mouseX = useSpring(x, { stiffness: 150, damping: 15 });
@@ -489,6 +530,7 @@ function AuthPage({ onLogin }) {
   const logoX = useTransform(mouseX, [-0.5, 0.5], [-15, 15]);
   const logoY = useTransform(mouseY, [-0.5, 0.5], [-15, 15]);
 
+  // Handlers
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -539,12 +581,9 @@ function AuthPage({ onLogin }) {
     }
   };
 
-  const handleLogin = () => {
-    onLogin();
-  };
-
   return (
     <div className="auth-container" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
+      {/* Background Orbs inside container for clipped effect */}
       <div className="aurora-orb orb-1"></div>
       <div className="aurora-orb orb-2"></div>
       <div className="aurora-orb orb-3"></div>
@@ -564,6 +603,7 @@ function AuthPage({ onLogin }) {
 
         <div className="auth-form">
           <AnimatePresence mode="popLayout" custom={step}>
+            {/* Login View */}
             {mode === 'login' && (
               <motion.div key="login" initial={{opacity:0, x:-20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:20}} transition={formTransition} style={{display:'flex', flexDirection:'column', gap:16}}>
                  <input type="email" placeholder="Email" className="auth-input" />
@@ -571,11 +611,12 @@ function AuthPage({ onLogin }) {
                    <input type={showPassword ? "text" : "password"} placeholder="Password" className="auth-input" />
                    <button type="button" className="password-toggle" onClick={() => setShowPassword(!showPassword)}>{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button>
                  </div>
-                 <button className="auth-button" onClick={handleLogin}>Log In <ArrowRight size={18} /></button>
+                 <button className="auth-button" onClick={onLogin}>Log In <ArrowRight size={18} /></button>
                  <p style={{textAlign:'center', color:'#86868B', fontSize:14, marginTop:10}}>Don't have an account? <span onClick={() => { setMode('signup'); setStep(1); }} className="switch-link">Sign Up</span></p>
               </motion.div>
             )}
             
+            {/* Signup Steps */}
             {mode === 'signup' && step === 1 && (
               <motion.div key="step1" initial={{opacity:0, x:20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:-20}} transition={formTransition} style={{display:'flex', flexDirection:'column', gap:16}}>
                 <div className="input-wrapper">
@@ -586,46 +627,46 @@ function AuthPage({ onLogin }) {
               </motion.div>
             )}
              
-             {mode === 'signup' && step === 2 && (
-                <motion.div key="step2" initial={{opacity:0, x:20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:-20}} transition={formTransition} style={{display:'flex', flexDirection:'column', gap:16}}>
-                  <div className="input-wrapper">
-                    <input name="password" type={showPassword ? "text" : "password"} value={formData.password} onChange={handleInputChange} placeholder="Password" className="auth-input" />
-                    <button type="button" className="password-toggle" onClick={() => setShowPassword(!showPassword)}>
-                       {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                    </button>
-                  </div>
-                  <div className="strength-bar-container">
-                     <div className={`strength-segment ${passwordStrength >= 1 ? 'active' : ''}`} style={{background: 'var(--error-red)'}} />
-                     <div className={`strength-segment ${passwordStrength >= 3 ? 'active' : ''}`} style={{background: 'var(--warn-orange)'}} />
-                     <div className={`strength-segment ${passwordStrength >= 4 ? 'active' : ''}`} style={{background: 'var(--success-green)'}} />
-                  </div>
-                  <input name="confirmPassword" type="password" value={formData.confirmPassword} onChange={handleInputChange} placeholder="Confirm Password" className="auth-input" />
-                </motion.div>
-             )}
+            {mode === 'signup' && step === 2 && (
+              <motion.div key="step2" initial={{opacity:0, x:20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:-20}} transition={formTransition} style={{display:'flex', flexDirection:'column', gap:16}}>
+                <div className="input-wrapper">
+                  <input name="password" type={showPassword ? "text" : "password"} value={formData.password} onChange={handleInputChange} placeholder="Password" className="auth-input" />
+                  <button type="button" className="password-toggle" onClick={() => setShowPassword(!showPassword)}>
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+                <div className="strength-bar-container">
+                    <div className={`strength-segment ${passwordStrength >= 1 ? 'active' : ''}`} style={{background: 'var(--error-red)'}} />
+                    <div className={`strength-segment ${passwordStrength >= 3 ? 'active' : ''}`} style={{background: 'var(--warn-orange)'}} />
+                    <div className={`strength-segment ${passwordStrength >= 4 ? 'active' : ''}`} style={{background: 'var(--success-green)'}} />
+                </div>
+                <input name="confirmPassword" type="password" value={formData.confirmPassword} onChange={handleInputChange} placeholder="Confirm Password" className="auth-input" />
+              </motion.div>
+            )}
 
-             {mode === 'signup' && step === 3 && (
-                <motion.div key="step3" initial={{opacity:0, x:20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:-20}} transition={formTransition} style={{display:'flex', flexDirection:'column', gap:16}}>
-                   <div className="input-wrapper"><input type="date" name="birthday" value={formData.birthday} onChange={handleInputChange} className="auth-input" /></div>
-                   {age !== null && <div className="age-box" style={{ borderColor: age < 18 ? 'var(--error-red)' : 'var(--success-green)' }}><div className="age-text">You are {age} years old</div></div>}
-                </motion.div>
-             )}
+            {mode === 'signup' && step === 3 && (
+              <motion.div key="step3" initial={{opacity:0, x:20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:-20}} transition={formTransition} style={{display:'flex', flexDirection:'column', gap:16}}>
+                  <div className="input-wrapper"><input type="date" name="birthday" value={formData.birthday} onChange={handleInputChange} className="auth-input" /></div>
+                  {age !== null && <div className="age-box" style={{ borderColor: age < 18 ? 'var(--error-red)' : 'var(--success-green)' }}><div className="age-text">You are {age} years old</div></div>}
+              </motion.div>
+            )}
 
-             {mode === 'signup' && step === 4 && (
-               <motion.div key="step4" initial={{opacity:0, x:20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:-20}} transition={formTransition} style={{display:'flex', flexDirection:'column', gap:16}}>
-                 {signupMethod === 'phone' ? (
-                   <div style={{display:'flex', gap:10}}><div className="auth-input" style={{width:80}}>+234</div><input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} className="auth-input" /></div>
-                 ) : (
-                   <input type="email" name="email" value={formData.email} onChange={handleInputChange} className="auth-input" placeholder="Email" />
-                 )}
-                 <button type="button" className="secondary-btn" onClick={() => setSignupMethod(signupMethod === 'phone' ? 'email' : 'phone')}>Switch Method</button>
-               </motion.div>
-             )}
+            {mode === 'signup' && step === 4 && (
+              <motion.div key="step4" initial={{opacity:0, x:20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:-20}} transition={formTransition} style={{display:'flex', flexDirection:'column', gap:16}}>
+                {signupMethod === 'phone' ? (
+                  <div style={{display:'flex', gap:10}}><div className="auth-input" style={{width:80}}>+234</div><input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} className="auth-input" /></div>
+                ) : (
+                  <input type="email" name="email" value={formData.email} onChange={handleInputChange} className="auth-input" placeholder="Email" />
+                )}
+                <button type="button" className="secondary-btn" onClick={() => setSignupMethod(signupMethod === 'phone' ? 'email' : 'phone')}>Switch Method</button>
+              </motion.div>
+            )}
 
             {mode === 'signup' && step === 5 && (
-               <motion.div key="step5" initial={{opacity:0, x:20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:-20}} transition={formTransition} style={{display:'flex', flexDirection:'column', gap:20, alignItems:'center'}}>
-                  <ShieldCheck size={48} color="#AF52DE" />
-                  <div className="otp-container">{formData.otp.map((digit, i) => <input key={i} type="text" maxLength={1} value={digit} onChange={(e) => handleOtpChange(e.target, i)} className="otp-input" />)}</div>
-               </motion.div>
+              <motion.div key="step5" initial={{opacity:0, x:20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:-20}} transition={formTransition} style={{display:'flex', flexDirection:'column', gap:20, alignItems:'center'}}>
+                <ShieldCheck size={48} color="#AF52DE" />
+                <div className="otp-container">{formData.otp.map((digit, i) => <input key={i} type="text" maxLength={1} value={digit} onChange={(e) => handleOtpChange(e.target, i)} className="otp-input" />)}</div>
+              </motion.div>
             )}
           </AnimatePresence>
         </div>
@@ -643,7 +684,7 @@ function AuthPage({ onLogin }) {
   );
 }
 
-// 2. DASHBOARD & PROFILE WRAPPER
+// --- HOME/PROFILE COMPONENT ---
 function HomePage({ onLogout }) {
   const [activeTab, setActiveTab] = useState('home'); // 'home' | 'profile'
   
@@ -662,6 +703,7 @@ function HomePage({ onLogout }) {
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
+      {/* Aurora effects now within dashboard too for seamless transition */}
       <div className="aurora-orb orb-1" style={{ top: '-15%', left: '-15%' }}></div>
       <div className="aurora-orb orb-2" style={{ bottom: '-5%', right: '-15%', opacity: 0.4 }}></div>
 
@@ -670,7 +712,7 @@ function HomePage({ onLogout }) {
         
         {/* VIEW 1: HOME */}
         {activeTab === 'home' && (
-          <motion.div key="home" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.2}}>
+          <motion.div key="home" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.2}} style={{paddingBottom: 20}}>
             <div className="dash-header">
               <h1 className="auth-logo-text" style={{ fontSize: 24, margin: 0 }}>Surprizxo</h1>
               <button className="chat-btn">
@@ -722,11 +764,12 @@ function HomePage({ onLogout }) {
 
         {/* VIEW 2: PROFILE */}
         {activeTab === 'profile' && (
-          <motion.div key="profile" initial={{opacity:0, x: 20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:-20}} transition={{duration:0.3}}>
+          <motion.div key="profile" initial={{opacity:0, x: 20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:-20}} transition={{duration:0.3}} style={{paddingBottom: 20}}>
             <div className="profile-header">
-               <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300" alt="Avatar" className="profile-avatar" />
-               <div className="profile-name">Sarah Jenkins</div>
-               <div className="profile-handle">@sarah_j</div>
+               {/* Updated to a reliable Unsplash image */}
+               <img src="https://unsplash.com/photos/man-in-white-crew-neck-shirt-wearing-black-framed-eyeglasses-C8Ta0gwPbQg" alt="Avatar" className="profile-avatar" />
+               <div className="profile-name">Mukhtar Abdullahi</div>
+               <div className="profile-handle">@bakori</div>
                <button className="chat-btn" style={{position:'absolute', top: 20, right: 20}}>
                  <Edit3 size={18} />
                </button>
@@ -795,7 +838,7 @@ function HomePage({ onLogout }) {
   );
 }
 
-// 3. MAIN APP
+// --- MAIN APP (ROUTER) ---
 export default function App() {
   const [currentPage, setCurrentPage] = useState("auth"); // 'auth', 'loading', 'home'
 
@@ -841,7 +884,6 @@ export default function App() {
                 <Sparkles size={48} color="#AF52DE" />
               </motion.div>
               <p style={{ marginTop: 20, color: '#86868B', fontWeight: 500 }}>
-                 {/* Logic to change text based on flow could go here */}
                  Loading...
               </p>
            </motion.div>
